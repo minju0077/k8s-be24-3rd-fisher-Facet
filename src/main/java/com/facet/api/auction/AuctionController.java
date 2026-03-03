@@ -1,7 +1,6 @@
 package com.facet.api.auction;
 
 import com.facet.api.auction.model.AucDto;
-import com.facet.api.auction.model.AucProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
