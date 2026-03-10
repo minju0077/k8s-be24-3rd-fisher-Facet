@@ -22,7 +22,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
@@ -46,9 +45,7 @@ dependencies {
 
     // 3. Actuator (애플리케이션 상태 및 지표 노출)
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    출처: https://wishui.tistory.com/entry/스프링-부트-jaeger-실습-인텔리제이-설정-24 [wishui_log:티스토리]
-
-ㅔ    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+   testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
