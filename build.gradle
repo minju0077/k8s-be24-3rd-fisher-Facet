@@ -36,8 +36,19 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    //--------ㅓjaeger --------
+    // 1. Micrometer Tracing Bridge (OpenTelemetry 사용)
+    implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+
+    // 2. OpenTelemetry Exporter (데이터를 Jaeger/OTLP로 전송)
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+
+    // 3. Actuator (애플리케이션 상태 및 지표 노출)
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+   testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
