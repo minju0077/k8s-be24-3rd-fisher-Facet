@@ -2,6 +2,21 @@ jwt:
   secret: ${JWT_SECRET}
   expire: ${JWT_EXPIRE}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus, metrics
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+
+
 spring:
   application:
     name: facet
@@ -31,6 +46,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
 
 logging:
   level:
