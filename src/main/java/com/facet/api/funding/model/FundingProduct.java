@@ -1,15 +1,12 @@
 package com.facet.api.funding.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 
 @Getter
 @Entity
-public class Funding {
+public class FundingProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
