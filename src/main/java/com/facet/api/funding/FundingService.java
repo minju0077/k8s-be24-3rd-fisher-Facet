@@ -27,11 +27,9 @@ public class FundingService {
         return result;
     }
 
-    public FundingDto.PageRes pageList(int page, int size, String currentFilter) {
+    public FundingDto.PageRes pageList(int page, int size, String currentFilter, String categories) {
         // 기본 정렬: 최신순(idx 오름차순으로 )
         Sort sort = Sort.by("idx").ascending();
-
-
         String sortType = currentFilter;
 
         if ("price".equals(sortType)) {
@@ -39,11 +37,16 @@ public class FundingService {
         } else if ("imminent".equals(sortType)) {
             sort = Sort.by("days").ascending(); // 마감 임박순 (필드명에 맞춰 수정 필요)
         }
+        // 카테고리 -----------------------------------------------
 
         // 정렬 정보(sort)를 포함하여 PageRequest 생성
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        Page<FundingProduct> result = fundingRepository.findAll(pageRequest);
+        if(categories.equals("all")){
+            Page<FundingProduct> result = fundingRepository.findAll(pageRequest);
+            return FundingDto.PageRes.from(result);
+        }
+        Page<FundingProduct> result = fundingRepository.findByCategory(categories,pageRequest);
         return FundingDto.PageRes.from(result);
     }
 }
