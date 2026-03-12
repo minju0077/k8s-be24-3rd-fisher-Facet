@@ -24,6 +24,7 @@ public class AuctionBidService {
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
 
         product.setCurrentPrice(dto.getBidPrice());
+        product.setBidCount(product.getBidCount() + 1);
 
         return AucDto.BidRes.from(entity);
     }
