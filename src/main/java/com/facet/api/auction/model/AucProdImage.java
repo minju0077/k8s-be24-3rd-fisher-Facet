@@ -20,6 +20,4 @@ public class AucProdImage {
     private Long aucProductIdx;
     @ColumnDefault("false")
     private Boolean titleImage;
-
-
 }

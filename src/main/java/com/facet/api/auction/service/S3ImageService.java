@@ -36,7 +36,7 @@ public class S3ImageService implements UploadService{
     @Override
     public List<String> upload(AucDto.ImageReq dto) {
         List<String> uploadPathList = new ArrayList<>();
-        List<AucDto.ImagePathDto> imagePathDtoist = new ArrayList<>();
+        List<AucDto.ImagePathDto> imagePathDtoList = new ArrayList<>();
             try {
                 for(MultipartFile file : dto.getFileList()){
                     String uploadPath = saveFile(dto.getProductIdx(), file);
@@ -46,12 +46,19 @@ public class S3ImageService implements UploadService{
                             .build();
                     AucProdImage entity = AucDto.ImagePathDto.toEntity(imagePathDto);
                     auctionImageRepository.save(entity);
-                    imagePathDtoist.add(imagePathDto);
+                    uploadPathList.add(imagePathDto.getImagePath());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         return uploadPathList;
+    }
+
+    public String getImage(Long productIdx){
+        AucProdImage entity = auctionImageRepository.findByAucProductIdx(productIdx);
+        String imagePath = entity.getImagePath();
+
+        return imagePath;
     }
 }
