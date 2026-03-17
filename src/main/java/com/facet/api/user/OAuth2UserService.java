@@ -22,9 +22,12 @@ public class OAuth2UserService
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         System.out.println("서비스 코드 실행");
 
+        String provider = userRequest
+                .getClientRegistration().getRegistrationId();
+
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        UserDto.OAuth dto = UserDto.OAuth.from(oAuth2User.getAttributes(), "{bcrypt}kakao");
+        UserDto.OAuth dto = UserDto.OAuth.from(oAuth2User.getAttributes(), provider);
 
         Optional<User> result = userRepository.findByEmail(dto.getEmail());
 
