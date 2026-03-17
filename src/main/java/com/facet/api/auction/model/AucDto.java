@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,7 +23,7 @@ public class AucDto {
         private Long totalCount;
         private int currentPage;
         private int currentSize;
-        
+
         public static PageRes from(Page<AucProduct> result){
             return PageRes.builder()
                     .auctionList(result.get().map(ListRes::from).toList())
@@ -32,9 +33,9 @@ public class AucDto {
                     .currentSize(result.getPageable().getPageSize())
                     .build();
         }
-        
+
     }
-    
+
     @Getter
     @Builder
     public static class ListRes{
@@ -185,6 +186,37 @@ public class AucDto {
                     .userIdx(entity.getUserIdx())
                     .bidPrice(entity.getBidPrice())
                     .createAt(entity.getCreateAt())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class ImageReq{
+        private List<MultipartFile> fileList;
+        private Long productIdx;
+
+        // 리스트에서 하나씩 꺼내서 이미지 경로 저장할 예정
+        public static AucProdImage toEntity(String imagePath, Long productIdx){
+            return AucProdImage.builder()
+                    .imagePath(imagePath)
+                    .aucProductIdx(productIdx)
+                    .build();
+        }
+    }
+
+    // DB 저장 형식 dto
+    @Builder
+    @Getter
+    @Setter
+    public static class ImagePathDto{
+        private Long productIdx;
+        private String imagePath;
+
+        public static AucProdImage toEntity(ImagePathDto dto){
+            return AucProdImage.builder()
+                    .aucProductIdx(dto.getProductIdx())
+                    .imagePath(dto.getImagePath())
                     .build();
         }
     }

@@ -1,5 +1,6 @@
 package com.facet.api.auction.controller;
 
+import com.facet.api.auction.model.AucDto;
 import com.facet.api.auction.service.S3ImageService;
 import com.facet.api.common.model.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ public class UploadController {
     private final S3ImageService s3ImageService;
 
     @GetMapping("/image")
-    public ResponseEntity upload(List<MultipartFile> images){
-        List<String> result = s3ImageService.upload(images);
+    public ResponseEntity upload(AucDto.ImageReq dto){
+        List<String> result = s3ImageService.upload(dto);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 }
