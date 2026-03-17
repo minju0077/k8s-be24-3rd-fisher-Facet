@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FundingRepository extends JpaRepository<FundingProduct,Long> {
     Page<FundingProduct> findByCategory(String category, PageRequest sort);
+
+    Page<FundingProduct> findByDays(int endDay, PageRequest pageRequest);
 }

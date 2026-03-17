@@ -16,7 +16,7 @@ public class FundingController {
 
     @GetMapping("/fundinglist")
     public ResponseEntity list(){
-        List<FundingDto.FundingList> result = fundingService.list();
+        List<FundingDto.FundingListRes> result = fundingService.list();
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
@@ -29,6 +29,24 @@ public class FundingController {
     ){
         FundingDto.PageRes result = fundingService.pageList(page, size, currentFilter,currentCategories);
 
+        return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+
+    @GetMapping("/descList/{idx}")
+    public ResponseEntity descList(@PathVariable Long idx){
+        FundingDto.DescListRes result = fundingService.descList(idx);
+        return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+    @GetMapping("/DetailList")
+    public ResponseEntity detailList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "4") int size,
+            @RequestParam(defaultValue = "1") int endDay
+
+    ){
+        FundingDto.DetailRes result =  fundingService.detailList(page,size,endDay);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 }

@@ -10,18 +10,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class FundingService {
     private final FundingRepository fundingRepository;
 
-    public  List<FundingDto.FundingList> list() {
+    public  List<FundingDto.FundingListRes> list() {
         List<FundingProduct> res = fundingRepository.findAll();
-        List<FundingDto.FundingList> result = new ArrayList<>();
+        List<FundingDto.FundingListRes> result = new ArrayList<>();
 
         for(FundingProduct data: res){
-            result.add(FundingDto.FundingList.from(data));
+            result.add(FundingDto.FundingListRes.from(data));
         }
 
         return result;
@@ -48,5 +49,23 @@ public class FundingService {
         }
         Page<FundingProduct> result = fundingRepository.findByCategory(categories,pageRequest);
         return FundingDto.PageRes.from(result);
+    }
+
+    public FundingDto.DescListRes descList(Long idx) {
+        Optional<FundingProduct> dto = fundingRepository.findById(idx);
+
+        if(dto.isPresent()){
+            FundingProduct data = dto.get();
+            return FundingDto.DescListRes.from(data);
+        }
+        return null;
+    }
+
+    public FundingDto.DetailRes detailList(int page, int size, int endDay) {
+        Sort sort = Sort.by("endDays").ascending();  // day 기준으로 정렬
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Page<FundingProduct> result = fundingRepository.findAll(pageRequest);
+        // Page<FundingProduct> result = fundingRepository.findByDays(endDay,pageRequest);
+        return FundingDto.DetailRes.from(result);
     }
 }
