@@ -17,7 +17,7 @@ public class FundDto {
         private String brand;
         private String img;
         private Long percent;
-        private Long price;
+        private int price;
         private Long supporters;
         private Long days;
         private String status;
@@ -69,7 +69,7 @@ public class FundDto {
         private String brand;
         private String img;
         private Long percent;
-        private Long price;
+        private int price;
         private Long targetPrice;  // 모인 금액
         private Long supporters; // 서포터즈
         private Long days;
@@ -116,7 +116,7 @@ public class FundDto {
         private String brand;
         private String img;
         private Long percent;
-        private Long price;
+        private int price;
         private Long targetPrice;  // 모인 금액
         private Long supporters; // 서포터즈
         private Long days;

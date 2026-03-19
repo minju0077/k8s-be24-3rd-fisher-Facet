@@ -30,7 +30,7 @@ public class FundProduct {
     private Long percent;
 
     @Column(nullable = false)
-    private Long price;
+    private int price;
 
     private Long targetPrice;  // 모인 금액
 
@@ -64,6 +64,4 @@ public class FundProduct {
     @OneToMany(mappedBy = "fundProduct",fetch = FetchType.LAZY)
     private List<FundImg> fundImgList;
 
-    @OneToMany(mappedBy = "fundProduct",fetch = FetchType.LAZY)
-    private List<FundOrdersItem> items;
 }

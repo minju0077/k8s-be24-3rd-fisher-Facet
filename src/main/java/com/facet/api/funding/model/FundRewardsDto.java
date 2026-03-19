@@ -9,7 +9,7 @@ public class FundRewardsDto {
     private Long idx;
     private String title;
     private String contents;
-    private Long price;
+    private int price;
     private Integer stock;  // 남은 수량
     private String tags; // 추천 배지
 

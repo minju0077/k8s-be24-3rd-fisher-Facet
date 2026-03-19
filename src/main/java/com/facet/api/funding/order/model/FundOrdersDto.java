@@ -34,4 +34,10 @@ public class FundOrdersDto {
                     .build();
         }
     }
+
+    @Builder
+    @Getter
+    public static class VerifyReq {
+        private String paymentId;
+    }
 }

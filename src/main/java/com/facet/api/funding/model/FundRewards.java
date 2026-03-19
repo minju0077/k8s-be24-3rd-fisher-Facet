@@ -1,10 +1,13 @@
 package com.facet.api.funding.model;
 
+import com.facet.api.funding.order.model.FundOrdersItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,7 +26,7 @@ public class FundRewards {
     private String contents;
 
     @Column(nullable = false)
-    private Long price;
+    private int price;
 
     @Column(nullable = false)
     private Integer stock;  // 남은 수량
@@ -33,5 +36,8 @@ public class FundRewards {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "product_idx")
     private FundProduct fundProduct;
+
+    @OneToMany(mappedBy = "fundRewards", fetch = FetchType.LAZY)
+    List<FundOrdersItem> ordersItems;
 
 }
