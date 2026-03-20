@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.facet.api.common.model.BaseResponseStatus.SUCCESS;
+import static com.facet.api.common.model.BaseResponseStatus.*;
 
 @Getter
 @Setter
@@ -20,6 +20,24 @@ public class BaseResponse<T> {
                 SUCCESS.isSuccess(),
                 SUCCESS.getCode(),
                 SUCCESS.getMessage(),
+                result
+        );
+    }
+
+    public static <T> BaseResponse ready_point(T result) {
+        return new BaseResponse(
+                READY_POINT.isSuccess(),
+                READY_POINT.getCode(),
+                READY_POINT.getMessage(),
+                result
+        );
+    }
+
+    public static <T> BaseResponse done_point(T result) {
+        return new BaseResponse(
+                DONE_POINT.isSuccess(),
+                DONE_POINT.getCode(),
+                DONE_POINT.getMessage(),
                 result
         );
     }

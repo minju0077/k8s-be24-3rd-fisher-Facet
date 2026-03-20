@@ -1,3 +1,6 @@
+portone:
+  portine_secret: ${PORTONE_SECRET}
+
 jwt:
   secret: ${JWT_SECRET}
   expire: ${JWT_EXPIRE}

@@ -25,4 +25,15 @@ public class User {
 
     @ColumnDefault(value="'ROLE_USER'")
     private String role;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Integer point;
+
+    public void addPoint(Integer amount) {
+        if(this.point == null){
+            this.point = 0;
+        }
+        this.point += amount;
+    }
 }

@@ -88,6 +88,7 @@ public class SecurityConfig {
                 (auth) -> auth
                         .requestMatchers("/auction/list","/user/login", "/user/signup", "/user/verify").permitAll()
                         .requestMatchers("/board/reg","/auction/detail/*").authenticated()
+                        .requestMatchers("/board/reg","/point/**").authenticated()
 //                        .anyRequest().authenticated()
                         .anyRequest().permitAll()
         ).exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
