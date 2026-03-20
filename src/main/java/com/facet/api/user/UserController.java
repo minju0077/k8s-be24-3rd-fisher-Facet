@@ -5,9 +5,7 @@ import com.facet.api.user.model.AuthUserDetails;
 import com.facet.api.user.model.UserDto;
 import com.facet.api.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,7 +25,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody UserDto.SignupReq dto) {
-        UserDto.SignupRes result =  userService.signup(dto);
+        UserDto.SignupRes result = userService.signup(dto);
 
         return ResponseEntity.ok(result);
     }
@@ -42,7 +40,7 @@ public class UserController {
         System.out.println(authentication);
         AuthUserDetails user = (AuthUserDetails) authentication.getPrincipal();
 
-        if(user != null) {
+        if (user != null) {
             String jwt = jwtUtil.createToken(user.getIdx(), user.getUsername(), user.getRole(), user.getName());
             UserDto.LoginRes rseult = UserDto.LoginRes.builder()
                     .idx(user.getIdx())
@@ -59,6 +57,23 @@ public class UserController {
         return ResponseEntity.ok("로그인 실패");
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        // 1. 만료 시간이 0인 쿠키 생성
+        ResponseCookie cookie = ResponseCookie.from("ATOKEN", "")
+                .path("/")
+                .maxAge(0) // 즉시 만료
+                .httpOnly(true) // 자바스크립트 접근 방지 (보안)
+                .secure(true) // HTTPS에서만 전송 (권장)
+                .sameSite("Strict") // CSRF 방지
+                .build();
+
+        // 2. 응답 헤더에 쿠키 설정하여 반환
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body("로그아웃 되었습니다.");
+    }
+
     @GetMapping("/verify")
     public ResponseEntity verify(String uuid) {
         userService.verify(uuid);
@@ -67,7 +82,7 @@ public class UserController {
     }
 
     @GetMapping("/callback")
-    public ResponseEntity callback(@AuthenticationPrincipal AuthUserDetails user){
+    public ResponseEntity callback(@AuthenticationPrincipal AuthUserDetails user) {
 
         UserDto.LoginRes rseult = UserDto.LoginRes.builder()
                 .idx(user.getIdx())
@@ -83,7 +98,7 @@ public class UserController {
     @GetMapping("/validate")
     public ResponseEntity validate(
             @RequestHeader("ATOKEN") String token
-    ){
+    ) {
         if (token == null || !token.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("헤더가 없거나 형식이 잘못됨");
         }

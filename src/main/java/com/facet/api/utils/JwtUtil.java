@@ -33,6 +33,14 @@ public class JwtUtil {
         return jwt;
     }
 
+    // 로그아웃을 위한 쿠키 생성 메소드, 유효시간을 0으로 세팅해서 토큰 발급
+    public String deleteToken() {
+        String jwt = Jwts.builder()
+                .issuedAt(new Date()).expiration(new Date(System.currentTimeMillis())).signWith(getEncodedKey()).compact();
+
+        return jwt;
+    }
+
     public Long getUserIdx(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith(getEncodedKey())
