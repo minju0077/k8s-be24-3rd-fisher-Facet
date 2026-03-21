@@ -39,3 +39,4 @@ out/
 gradlew*
 
 .env
+keystore.p12
