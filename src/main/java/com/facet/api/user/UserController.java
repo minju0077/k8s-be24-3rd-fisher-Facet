@@ -129,4 +129,13 @@ public class UserController {
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
+    @PostMapping("/updatepassword")
+    public ResponseEntity updatepassword(
+            @AuthenticationPrincipal AuthUserDetails user,
+            @RequestBody UserDto.PasswordUpdateReq dto
+    ){
+        userService.updatePassword(user.getUsername(), dto);
+        return ResponseEntity.ok(BaseResponse.success("비밀번호가 변경되었습니다."));
+    }
+
 }

@@ -142,4 +142,12 @@ public class UserDto {
                     .build();
         }
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class PasswordUpdateReq {
+        private String currentPassword; // 현재 비밀번호 (확인용)
+        private String newPassword;     // 새 비밀번호
+    }
 }

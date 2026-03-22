@@ -86,6 +86,18 @@ public class UserService implements UserDetailsService {
         return UserDto.UserInfoRes.from(user);
     }
 
+    public void updatePassword(String email, UserDto.PasswordUpdateReq req) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> BaseException.from(USER_NOT_FOUND)
+        );
+        if(!passwordEncoder.matches(req.getCurrentPassword(), user.getPassword())) {
+            throw BaseException.from(INVALID_PASSWORD);
+        }
+
+        user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+        userRepository.save(user);
+    }
+
 
 
 
