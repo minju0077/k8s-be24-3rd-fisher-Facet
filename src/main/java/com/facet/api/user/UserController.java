@@ -13,6 +13,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RequestMapping("/user")
@@ -138,4 +141,29 @@ public class UserController {
         return ResponseEntity.ok(BaseResponse.success("비밀번호가 변경되었습니다."));
     }
 
+    @GetMapping("/history")
+    public ResponseEntity getMyHistory(@AuthenticationPrincipal AuthUserDetails userDetails) {
+
+        // 1. 방금 만든 UserService의 메서드를 호출해서 데이터 가져오기
+        List<UserDto.HistoryDto> historyList = userService.getMyHistory(userDetails.getIdx());
+
+        // 2. 프론트엔드 상단에 띄울 요약 데이터(Summary) 계산하기
+        long ongoingCount = historyList.stream()
+                .filter(h -> "진행중".equals(h.getStatus()) || "PAID".equals(h.getStatus()) || "PENDING".equals(h.getStatus()))
+                .count();
+        long endedCount = historyList.size() - ongoingCount;
+
+        Map<String, Object> summary = new HashMap<>();
+        summary.put("total", historyList.size());
+        summary.put("ongoing", ongoingCount);
+        summary.put("ended", endedCount);
+
+        // 3. 리스트와 요약 데이터를 하나의 맵(Map)으로 포장하기
+        Map<String, Object> result = new HashMap<>();
+        result.put("historyList", historyList);
+        result.put("summary", summary);
+
+        // 4. 프론트엔드로 발사!
+        return ResponseEntity.ok(BaseResponse.success(result));
+    }
 }

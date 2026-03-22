@@ -151,4 +151,17 @@ public class UserDto {
         private String currentPassword; // 현재 비밀번호 (확인용)
         private String newPassword;     // 새 비밀번호
     }
+
+    @Getter
+    @Builder
+    public static class HistoryDto {
+        private String type;          // "AUCTION" 또는 "FUNDING"
+        private Long productIdx;      // 상품 번호 (상세 페이지 이동용)
+        private String name;          // 상품 이름
+        private String image;         // 상품 썸네일 이미지 URL
+        private Long myPrice;         // 내 입찰가 / 내 펀딩 금액
+        private Long currentPrice;    // 경매 현재 최고가 (펀딩은 null)
+        private String date;          // 날짜 (생략하기로 했으니 "-" 등으로 처리) 추가해 줘야함
+        private String status;        // 진행 상태
+    }
 }
