@@ -59,4 +59,13 @@ public class BaseResponse<T> {
                 result
         );
     }
+
+    public static <T> BaseResponse fundOrders(BaseResponseStatus status, T result) {
+        return new BaseResponse(
+                status.isSuccess(),
+                status.getCode(),
+                status.getMessage(),
+                result
+        );
+    }
 }

@@ -38,7 +38,7 @@ public class FundOrderController {
             @AuthenticationPrincipal AuthUserDetails user,
             @RequestBody FundOrdersDto.VerifyReq dto) {
         BaseResponseStatus result = fundOrdersService.verify(user,dto);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(BaseResponse.fundOrders(result,result));
     }
 
 
