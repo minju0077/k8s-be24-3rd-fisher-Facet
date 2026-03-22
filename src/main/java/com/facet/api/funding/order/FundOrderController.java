@@ -1,6 +1,7 @@
 package com.facet.api.funding.order;
 
 import com.facet.api.common.model.BaseResponse;
+import com.facet.api.common.model.BaseResponseStatus;
 import com.facet.api.funding.order.model.FundOrders;
 import com.facet.api.funding.order.model.FundOrdersDto;
 import com.facet.api.user.model.AuthUserDetails;
@@ -36,8 +37,8 @@ public class FundOrderController {
     public ResponseEntity verify(
             @AuthenticationPrincipal AuthUserDetails user,
             @RequestBody FundOrdersDto.VerifyReq dto) {
-        fundOrdersService.verify(user,dto);
-        return ResponseEntity.ok(BaseResponse.success("성공"));
+        BaseResponseStatus result = fundOrdersService.verify(user,dto);
+        return ResponseEntity.ok(result);
     }
 
 

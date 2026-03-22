@@ -1,8 +1,8 @@
 package com.facet.api.funding.order;
 
 import com.facet.api.common.exception.BaseException;
+import com.facet.api.common.model.BaseResponseStatus;
 import com.facet.api.funding.FundingRepository;
-import com.facet.api.funding.model.FundProduct;
 import com.facet.api.funding.model.FundRewards;
 import com.facet.api.funding.order.model.FundOrders;
 import com.facet.api.funding.order.model.FundOrdersDto;
@@ -10,8 +10,10 @@ import com.facet.api.funding.order.model.FundOrdersItem;
 import com.facet.api.user.model.AuthUserDetails;
 import com.nimbusds.jose.shaded.gson.GsonBuilder;
 import com.nimbusds.jose.shaded.gson.ToNumberPolicy;
+import io.portone.sdk.server.payment.CancelPaymentResponse;
 import io.portone.sdk.server.payment.PaidPayment;
 import io.portone.sdk.server.payment.Payment;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,21 +30,19 @@ import static com.facet.api.common.model.BaseResponseStatus.*;
 @Service
 public class FundOrdersService {
     private final FundOrdersRepository fundOrdersRepository;
-    private final FundItemRepository fundItemRepository;
-    private final FundingRepository fundingRepository;
     private final FundRewardRepository fundRewardRepository;
 
     private final PaymentClient pg;
 
     // 결제 검증 및 완료 처리
-    public void verify(AuthUserDetails user, FundOrdersDto.VerifyReq dto) {
+    @Transactional
+    public BaseResponseStatus verify(AuthUserDetails user, FundOrdersDto.VerifyReq dto) {
 
         // pg사에 페이먼트id 를 요청한다. completableFuture를 통해서 비동기로 요청
         CompletableFuture<Payment> completableFuture = pg.getPayment(dto.getPaymentId());
         // join()은 비동기 작업이 끝날때까지 기다렸다가 받아오겠다
         io.portone.sdk.server.payment.Payment payment = completableFuture.join();
 
-        // System.out.println(payment);
         // 가져온 payment 객체가 실제로 결제가 완료된 상태(PaidPayment) 인지 확인
         // 포트원에서 결제 이후 보내준 데이터를 customData에 넣는다.
         if(payment instanceof PaidPayment paidPayment) {
@@ -55,7 +55,13 @@ public class FundOrdersService {
             Long ordersIdx = Long.parseLong(customData.get("ordersIdx").toString());
 
             // id를 조회해서 정보를 가지고 온다.
-            FundOrders orders = fundOrdersRepository.findById(ordersIdx).orElseThrow();
+            FundOrders orders = fundOrdersRepository.findById(ordersIdx)
+                    .orElseThrow(() -> new BaseException(PAYMENT_USER_NOT_FOUND));
+
+            if (!orders.getOrdersIdx().equals(user.getIdx())) {
+                return BaseResponseStatus.PAYMENT_USER_MISMATCH;
+            }
+
             List<Long> rewards = orders.getOrdersItems().stream()
                     .map(FundOrdersItem::getProductIdx)
                     .toList();
@@ -97,12 +103,34 @@ public class FundOrdersService {
                     // 변경된 재고를 DB에 반영 (Dirty Checking 덕분에 생략 가능할 수도 있지만 명시적으로 작성)
                     fundRewardRepository.save(reward);
                 }
-                System.out.println(DONE_POINT);
+                return BaseResponseStatus.DONE_POINT;
             }else {
-                // 결제 취소 및 취소 이벤트 발행
-                System.out.println(FAILED);
+
+                // 1. 주문 상태를 결제 실패/취소로 변경
+                orders.setStatus("CANCELLED");
+                fundOrdersRepository.save(orders);
+
+                try {
+                    // 2. PG사(포트원)에 비동기 결제 취소 요청
+                    CompletableFuture<CancelPaymentResponse> future = pg.cancelPayment(
+                            dto.getPaymentId(),
+                            null, null, null,
+                            "amount-mismatch-error", // 취소 사유
+                            null, null, null, null, null, null
+                    );
+
+                    // 취소가 완료될 때까지 대기
+                    future.join();
+
+                } catch (Exception e) {
+                    // 취소 실패 시 로그 기록 (매우 중요: 실제 돈이 나갔을 수 있음)
+                    System.err.println("PG사 결제 취소 실패: " + e.getMessage());
+                    return BaseResponseStatus.PAYMENT_CANCEL_FAIL;
+                }
+                return BaseResponseStatus.PAYMENT_INVALID_AMOUNT;
             }
         }
+        return BaseResponseStatus.PAYMENT_FAIL;
     }
 }
 
