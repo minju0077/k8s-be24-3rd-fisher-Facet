@@ -2,6 +2,8 @@ package com.facet.api.funding.order;
 
 import com.facet.api.common.model.BaseResponse;
 import com.facet.api.common.model.BaseResponseStatus;
+import com.facet.api.funding.FundingRepository;
+import com.facet.api.funding.model.FundProduct;
 import com.facet.api.funding.order.model.FundOrders;
 import com.facet.api.funding.order.model.FundOrdersDto;
 import com.facet.api.user.model.AuthUserDetails;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 public class FundOrderController {
+    private final FundingRepository fundingRepository;
     private final FundOrdersService fundOrdersService;
     private final FundOrdersRepository fundOrdersRepository;
     private final PaymentClient pg;
@@ -28,7 +31,11 @@ public class FundOrderController {
             @AuthenticationPrincipal AuthUserDetails user,
             @RequestBody FundOrdersDto.OrdersReq dto
             ){
-        FundOrders orders = fundOrdersRepository.save(dto.toEntity(user.toEntity()));
+
+        FundProduct product = fundingRepository.findById(dto.getProductIdx())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+
+        FundOrders orders = fundOrdersRepository.save(dto.toEntity(user.toEntity(), product));
         // 주문자 idx, 결제 여부
         return ResponseEntity.ok(FundOrdersDto.OrdersRes.from(orders));
     }

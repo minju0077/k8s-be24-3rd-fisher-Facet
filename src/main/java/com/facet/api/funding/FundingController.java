@@ -16,7 +16,7 @@ public class FundingController {
 
     @GetMapping("/fundinglist")
     public ResponseEntity list(){
-        List<FundDto.FundingListRes> result = fundingService.list();
+        List<FundDto.FundListRes> result = fundingService.list();
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
@@ -27,7 +27,7 @@ public class FundingController {
             @RequestParam(defaultValue = "all") String currentFilter,
             @RequestParam(defaultValue = "all") String currentCategories
     ){
-        FundDto.PageRes result = fundingService.pageList(page, size, currentFilter,currentCategories);
+        FundDto.FundPageRes result = fundingService.pageList(page, size, currentFilter,currentCategories);
 
         return ResponseEntity.ok(BaseResponse.success(result));
     }

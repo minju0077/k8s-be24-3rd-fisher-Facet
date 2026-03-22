@@ -1,6 +1,8 @@
 package com.facet.api.funding.order.model;
 
 
+import com.facet.api.funding.model.FundProduct;
+import com.facet.api.funding.model.FundRewards;
 import com.facet.api.user.model.User;
 import lombok.*;
 
@@ -41,22 +43,32 @@ public class FundOrdersDto {
     @Builder
     @Getter
     public static class OrdersReq {
+        private Long productIdx;
         private Long price;
         private List<OrdersItemReq> ordersItems;
 
-        public FundOrders toEntity(User user) {
+        public FundOrders toEntity(User user, FundProduct product) {
             FundOrders orders = FundOrders.builder()
                     .ordersIdx(user.getIdx())
                     .status("PENDING")
                     .price(this.price)
+                    .fundProduct(product)
                     .build();
 
             if (this.ordersItems != null) {
                 this.ordersItems.forEach(item -> {
+                    // 1. 해당 상품(product)이 가진 리워드 리스트에서 현재 아이템의 ID와 일치하는 것을 찾습니다.
+                    FundRewards matchingReward = product.getFundRewardsList().stream()
+                            .filter(r -> r.getIdx().equals(item.getProductIdx()))
+                            .findFirst()
+                            .orElse(null); // 또는 예외 처리
+
+                    // 2. Builder에 .fundRewards(matchingReward)를 반드시 추가해야 합니다.
                     orders.getOrdersItems().add(FundOrdersItem.builder()
                             .productIdx(item.getProductIdx())
                             .quantity(item.getQuantity())
                             .fundOrders(orders)
+                            .fundRewards(matchingReward) // [이 부분이 핵심!] 이 코드가 있어야 reward_idx가 채워집니다.
                             .build());
                 });
             }

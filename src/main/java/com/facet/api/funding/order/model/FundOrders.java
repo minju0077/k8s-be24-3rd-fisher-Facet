@@ -1,5 +1,6 @@
 package com.facet.api.funding.order.model;
 
+import com.facet.api.funding.model.FundProduct;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -30,5 +31,9 @@ public class FundOrders {
     @OneToMany(mappedBy = "fundOrders",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default
     private List<FundOrdersItem> ordersItems  = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "product_idx")
+    private FundProduct fundProduct;
 
 }

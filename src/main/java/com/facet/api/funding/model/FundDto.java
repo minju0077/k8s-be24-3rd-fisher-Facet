@@ -10,6 +10,40 @@ public class FundDto {
     @Builder
     @Getter
     // 펀딩 리스트 조회 응답
+    public static class FundListRes{
+        private Long idx;
+        private String category;
+        private String name;
+        private String brand;
+        private String img;
+        private Long percent;
+        private Long totalPrice;
+        private Long supporters;
+        private String endDays;
+        private String status;
+        private Long goalPrice;
+
+        public static FundListRes from(FundProduct entity, Long totalAmount, Long totalSupporters, Long currentPercent ){
+            return FundListRes.builder()
+                    .idx(entity.getIdx())
+                    .category(entity.getCategory())
+                    .name(entity.getName())
+                    .brand(entity.getBrand())
+                    .img(entity.getImg())
+                    .percent(currentPercent)
+                    .totalPrice(totalAmount)
+                    .supporters(totalSupporters)
+                    .endDays(entity.getEndDays())
+                    .status(entity.getStatus())
+                    .goalPrice(entity.getGoalPrice())
+                    .build();
+        }
+    }
+
+
+    @Builder
+    @Getter
+    // 펀딩 리스트 조회 응답
     public static class FundingListRes{
         private Long idx;
         private String category;
@@ -19,7 +53,7 @@ public class FundDto {
         private Long percent;
         private int price;
         private Long supporters;
-        private Long days;
+        private String endDays;
         private String status;
 
         public static FundDto.FundingListRes from(FundProduct entity){
@@ -32,8 +66,29 @@ public class FundDto {
                     .percent(entity.getPercent())
                     .price(entity.getPrice())
                     .supporters(entity.getSupporters())
-                    .days(entity.getDays())
+                    .endDays(entity.getEndDays())
                     .status(entity.getStatus())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    // 펀딩 페이지 리스트 응답
+    public static class FundPageRes{
+        private List<FundListRes> fundingList;
+        private int totalPage;
+        private long totalCount;
+        private int currentPage;
+        private int currentSize;
+
+        public static FundPageRes from(Page<FundProduct> entity, List<FundDto.FundListRes> dtoList){
+            return FundPageRes.builder()
+                    .fundingList(dtoList)
+                    .totalPage(entity.getTotalPages())
+                    .totalCount(entity.getTotalElements())
+                    .currentPage(entity.getPageable().getPageNumber())
+                    .currentSize(entity.getPageable().getPageSize())
                     .build();
         }
     }
@@ -59,6 +114,8 @@ public class FundDto {
         }
     }
 
+
+
     @Getter
     @Builder
     // 펀딩 상세 페이지 리스트 응답
@@ -69,10 +126,9 @@ public class FundDto {
         private String brand;
         private String img;
         private Long percent;
-        private int price;
-        private Long targetPrice;  // 모인 금액
+        private Long totalPrice;   // 모인 금액
+        private Long goalPrice;    // 목표 금액
         private Long supporters; // 서포터즈
-        private Long days;
         private String endDays;
         private String status;
         private String type;
@@ -82,18 +138,18 @@ public class FundDto {
         private List<FundProcessDto> fundProcessList;
         private List<FundImgDto> fundImgList;
 
-        public static DescListRes from(FundProduct entity){
+
+        public static DescListRes from(FundProduct entity, Long totalAmount , Long totalSupporters, Long currentPercent){
             return DescListRes.builder()
                     .idx(entity.getIdx())
                     .category(entity.getCategory())
                     .name(entity.getName())
                     .brand(entity.getBrand())
                     .img(entity.getImg())
-                    .percent(entity.getPercent())
-                    .price(entity.getPrice())
-                    .targetPrice(entity.getTargetPrice())
-                    .supporters(entity.getSupporters())
-                    .days(entity.getDays())
+                    .percent(currentPercent)
+                    .totalPrice(totalAmount)
+                    .goalPrice(entity.getGoalPrice())
+                    .supporters(totalSupporters)
                     .endDays(entity.getEndDays())
                     .status(entity.getStatus())
                     .type(entity.getType())
@@ -119,7 +175,7 @@ public class FundDto {
         private int price;
         private Long targetPrice;  // 모인 금액
         private Long supporters; // 서포터즈
-        private Long days;
+        private String endDays;
         private String status;
         private String type;
 
@@ -134,7 +190,7 @@ public class FundDto {
                     .price(entity.getPrice())
                     .targetPrice(entity.getTargetPrice())
                     .supporters(entity.getSupporters())
-                    .days(entity.getDays())
+                    .endDays(entity.getEndDays())
                     .status(entity.getStatus())
                     .type(entity.getType())
                     .build();
@@ -145,15 +201,15 @@ public class FundDto {
     @Builder
     // 펀딩 페이지 리스트 응답
     public static class DetailRes{
-        private List<FundingListRes> fundingList;
+        private List<FundListRes> fundingList;
         private int totalPage;
         private long totalCount;
         private int currentPage;
         private int currentSize;
 
-        public static DetailRes from(Page<FundProduct> entity){
+        public static DetailRes from(Page<FundProduct> entity, List<FundDto.FundListRes> dtoList ){
             return DetailRes.builder()
-                    .fundingList(entity.get().map(FundDto.FundingListRes::from).toList())
+                    .fundingList(dtoList)
                     .totalPage(entity.getTotalPages())
                     .totalCount(entity.getTotalElements())
                     .currentPage(entity.getPageable().getPageNumber())

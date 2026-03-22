@@ -2,11 +2,13 @@ package com.facet.api.funding;
 
 import com.facet.api.funding.model.FundProduct;
 import com.facet.api.funding.model.FundDto;
+import com.facet.api.funding.order.FundOrdersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,19 +18,37 @@ import java.util.Optional;
 @Service
 public class FundingService {
     private final FundingRepository fundingRepository;
+    private final FundOrdersRepository fundOrdersRepository;
 
-    public  List<FundDto.FundingListRes> list() {
+    // 메인 리스트 조회
+    public  List<FundDto.FundListRes> list() {
         List<FundProduct> res = fundingRepository.findAll();
-        List<FundDto.FundingListRes> result = new ArrayList<>();
+        List<FundDto.FundListRes> result = new ArrayList<>();
 
         for(FundProduct data: res){
-            result.add(FundDto.FundingListRes.from(data));
+            // 총 금액 합산 결과
+            Long totalAmount = fundOrdersRepository.sumPaidPriceByProductIdx(data.getIdx());
+            // 총 서포터 합산 결과
+            Long totalSupporters = fundOrdersRepository.countPaidSupportersByProductIdx(data.getIdx());
+
+            // null 처리 (주문이 하나도 없을 경우)
+            totalAmount = (totalAmount != null) ? totalAmount : 0L;
+            totalSupporters = (totalSupporters != null) ? totalSupporters : 0L;
+
+            // 2. 퍼센트 계산: (현재금액 * 100) / 목표금액
+            Long currentPercent = 0L;
+            if (data.getGoalPrice() != null && data.getGoalPrice() > 0) {
+                currentPercent = (totalAmount * 100) / data.getGoalPrice();
+            }
+
+            result.add(FundDto.FundListRes.from(data,totalAmount,totalSupporters,currentPercent ));
         }
 
         return result;
     }
 
-    public FundDto.PageRes pageList(int page, int size, String currentFilter, String categories) {
+    // 리스트 페이지 리스트 조회
+    public FundDto.FundPageRes pageList(int page, int size, String currentFilter, String categories) {
         // 기본 정렬: 최신순(idx 오름차순으로 )
         Sort sort = Sort.by("idx").ascending();
         String sortType = currentFilter;
@@ -36,19 +56,22 @@ public class FundingService {
         if ("price".equals(sortType)) {
             sort = Sort.by("price").ascending(); // 낮은 가격순
         } else if ("imminent".equals(sortType)) {
-            sort = Sort.by("days").ascending(); // 마감 임박순 (필드명에 맞춰 수정 필요)
+            sort = Sort.by("endDays").ascending(); // 마감 임박순 (필드명에 맞춰 수정 필요)
         }
         // 카테고리 -----------------------------------------------
 
         // 정렬 정보(sort)를 포함하여 PageRequest 생성
         PageRequest pageRequest = PageRequest.of(page, size, sort);
-
+        Page<FundProduct> result;
         if(categories.equals("all")){
-            Page<FundProduct> result = fundingRepository.findAll(pageRequest);
-            return FundDto.PageRes.from(result);
+            result = fundingRepository.findAll(pageRequest);
+            List<FundDto.FundListRes> dtoList =  convertToDtoList(result.getContent());
+            return FundDto.FundPageRes.from(result,dtoList);
         }
-        Page<FundProduct> result = fundingRepository.findByCategory(categories,pageRequest);
-        return FundDto.PageRes.from(result);
+        result = fundingRepository.findByCategory(categories,pageRequest);
+        List<FundDto.FundListRes> dtoList =  convertToDtoList(result.getContent());
+
+        return FundDto.FundPageRes.from(result,dtoList);
     }
 
     public FundDto.DescListRes descList(Long idx) {
@@ -56,7 +79,20 @@ public class FundingService {
 
         if(dto.isPresent()){
             FundProduct data = dto.get();
-            return FundDto.DescListRes.from(data);
+
+
+            Long totalAmount = fundOrdersRepository.sumPaidPriceByProductIdx(data.getIdx());
+            Long totalSupporters = fundOrdersRepository.countPaidSupportersByProductIdx(data.getIdx());
+
+            totalAmount = (totalAmount != null) ? totalAmount : 0L;
+            totalSupporters = (totalSupporters != null) ? totalSupporters : 0L;
+
+            Long currentPercent = 0L;
+            if (data.getGoalPrice() != null && data.getGoalPrice() > 0) {
+                currentPercent = (totalAmount * 100) / data.getGoalPrice();
+            }
+
+            return FundDto.DescListRes.from(data,totalAmount ,totalSupporters,currentPercent);
         }
         return null;
     }
@@ -65,7 +101,27 @@ public class FundingService {
         Sort sort = Sort.by("endDays").ascending();  // day 기준으로 정렬
         PageRequest pageRequest = PageRequest.of(page, size, sort);
         Page<FundProduct> result = fundingRepository.findAll(pageRequest);
-        // Page<FundingProduct> result = fundingRepository.findByDays(endDay,pageRequest);
-        return FundDto.DetailRes.from(result);
+        List<FundDto.FundListRes> dtoList = convertToDtoList(result.getContent());
+
+        return FundDto.DetailRes.from(result,dtoList);
+    }
+
+
+    // 서포터즈, 모인 금액, 페센트 계산 메소드
+    private List<FundDto.FundListRes> convertToDtoList(List<FundProduct> products) {
+        List<FundDto.FundListRes> dtoList = new ArrayList<>();
+        for (FundProduct data : products) {
+            Long totalAmount = fundOrdersRepository.sumPaidPriceByProductIdx(data.getIdx());
+            Long totalSupporters = fundOrdersRepository.countPaidSupportersByProductIdx(data.getIdx());
+
+            totalAmount = (totalAmount != null) ? totalAmount : 0L;
+            totalSupporters = (totalSupporters != null) ? totalSupporters : 0L;
+
+            Long currentPercent = (data.getGoalPrice() != null && data.getGoalPrice() > 0)
+                    ? (totalAmount * 100) / data.getGoalPrice() : 0L;
+
+            dtoList.add(FundDto.FundListRes.from(data, totalAmount, totalSupporters, currentPercent));
+        }
+        return dtoList;
     }
 }

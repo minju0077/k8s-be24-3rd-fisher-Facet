@@ -1,5 +1,6 @@
 package com.facet.api.funding.model;
 
+import com.facet.api.funding.order.model.FundOrders;
 import com.facet.api.funding.order.model.FundOrdersItem;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,10 +35,10 @@ public class FundProduct {
 
     private Long targetPrice;  // 모인 금액
 
+    private Long goalPrice; // 목표 금액
+
     private Long supporters; // 서포터즈
 
-    @Column(nullable = false)
-    private Long days; // 남은 일
 
     @Column(nullable = false)
     private String endDays; // 남은 날짜
@@ -63,5 +64,8 @@ public class FundProduct {
 
     @OneToMany(mappedBy = "fundProduct",fetch = FetchType.LAZY)
     private List<FundImg> fundImgList;
+
+    @OneToMany(mappedBy = "fundProduct",fetch = FetchType.LAZY)
+    private List<FundOrders> fundOrders;
 
 }
