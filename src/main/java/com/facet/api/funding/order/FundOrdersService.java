@@ -66,7 +66,7 @@ public class FundOrdersService {
                     .map(FundOrdersItem::getProductIdx)
                     .toList();
 
-            List<FundRewards> rewardsList = fundRewardRepository.findAllById(rewards);
+            List<FundRewards> rewardsList = fundRewardRepository.findAllByIdWithPessimisticLock(rewards);
 
 
             // 주문 상품에 하나씩 꺼내서 금액을 결제, 상품 금액 * 주문 수량
