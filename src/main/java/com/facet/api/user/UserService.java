@@ -64,4 +64,30 @@ public class UserService implements UserDetailsService {
         user.setEnable(true);
         userRepository.save(user);
     }
+
+    public UserDto.UserInfoRes getUserInfo(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> BaseException.from(USER_NOT_FOUND)
+        );
+        return UserDto.UserInfoRes.from(user);
+    }
+
+    public UserDto.UserInfoRes updateUserInfo(String email, UserDto.UserInfoReq req){
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> BaseException.from(USER_NOT_FOUND)
+        );
+
+        user.setPhoneNumber(req.getPhoneNumber());
+        user.setAddress(req.getAddress());
+        user.setBirthDate(req.getBirthDate());
+
+        userRepository.save(user);
+
+        return UserDto.UserInfoRes.from(user);
+    }
+
+
+
+
+
 }

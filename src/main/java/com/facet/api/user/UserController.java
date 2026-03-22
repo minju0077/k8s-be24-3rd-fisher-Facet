@@ -113,4 +113,20 @@ public class UserController {
         }
     }
 
+    @GetMapping("/getuserinfo")
+    public ResponseEntity getUserInfo(
+            @AuthenticationPrincipal AuthUserDetails user){
+        UserDto.UserInfoRes result = userService.getUserInfo(user.getUsername());
+        return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+    @PostMapping("/updateuserinfo")
+    public ResponseEntity updateUserInfo(
+            @AuthenticationPrincipal AuthUserDetails user,
+            @RequestBody UserDto.UserInfoReq dto
+    ) {
+        UserDto.UserInfoRes result = userService.updateUserInfo(user.getUsername(), dto);
+        return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
 }

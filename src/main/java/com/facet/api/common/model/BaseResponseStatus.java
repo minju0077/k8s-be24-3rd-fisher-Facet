@@ -41,8 +41,8 @@ public enum BaseResponseStatus {
 
 
     // 5000번대 실패
-    FAIL(false, 5000, "요청이 실패했습니다");
-
+    FAIL(false, 5000, "요청이 실패했습니다"),
+    USER_NOT_FOUND(false,5001,"유저를 찾을 수 없습니다.");
     private final boolean success;
     private final int code;
     private final String message;

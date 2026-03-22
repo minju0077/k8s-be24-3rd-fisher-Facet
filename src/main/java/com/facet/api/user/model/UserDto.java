@@ -2,7 +2,10 @@ package com.facet.api.user.model;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 public class UserDto {
@@ -105,6 +108,37 @@ public class UserDto {
                     .idx(entity.getIdx())
                     .email(entity.getEmail())
                     .userName(entity.getName())
+                    .build();
+        }
+    }
+
+    @Setter
+    @Getter
+    @NoArgsConstructor
+    public static class UserInfoReq {
+        private String phoneNumber;
+        private String address;
+        private LocalDate birthDate;
+    }
+
+    @Builder
+    @Getter
+    public static class UserInfoRes {
+        private String name;
+        private String email;
+        private Integer point;
+        private String phoneNumber;
+        private String address;
+        private LocalDate birthDate;
+
+        public static UserInfoRes from(User entity) {
+            return UserInfoRes.builder()
+                    .email(entity.getEmail())
+                    .name(entity.getName())
+                    .point(entity.getPoint())
+                    .phoneNumber(entity.getPhoneNumber())
+                    .address(entity.getAddress())
+                    .birthDate(entity.getBirthDate())
                     .build();
         }
     }
