@@ -6,14 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FundingStory {
+public class FundStory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -32,6 +30,6 @@ public class FundingStory {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "product_idx")
-    private FundingProduct fundingProduct;
+    private FundProduct fundProduct;
 
 }

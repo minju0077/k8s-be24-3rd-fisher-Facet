@@ -11,6 +11,7 @@ public enum BaseResponseStatus {
     READY_POINT(true, 2001, "결제 대기"),
     DONE_POINT(true, 2002,"결제 완료"),
     CANCELED(true,2003,"결제 취소"),
+    FAILED(false, 2004, "결제 실패"),
 
 
     // 3000번대 클라이언트 입력 오류, 입력값 검증 오류
@@ -36,8 +37,15 @@ public enum BaseResponseStatus {
     PAYMENT_READY_IS_LONG(false,4105,"대기 시간을 초과했습니다."),
     PAYMENT_USER_NOT_FOUND(false,4106,"유저를 찾을 수 없습니다."),
     PAYMENT_AMOUNT_FALSE(false,4107,"결제 금액이 위조되었습니다"),
+    PAYMENT_CANCEL_FAIL(false, 4108, "결제 취소 요청 중 오류가 발생했습니다."),
+    PAYMENT_USER_MISMATCH(false, 4109, "본인의 주문만 결제 가능합니다."),
 
 
+
+    // 4200번대: 리워드(quantity) 관련 오류
+    REWARD_SOLD_OUT(false, 4201, "해당 상품 이미 품절되었습니다"),
+    REWARD_QUANTITY_LACK(false, 4202, "선택하신 수량보다 재고가 부족합니다"),
+    NOT_FOUND_REWARD(false, 4203, "선택하신 리워드를 찾을 수 없습니다"),
 
 
     // 5000번대 실패

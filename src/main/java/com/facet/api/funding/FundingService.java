@@ -1,7 +1,7 @@
 package com.facet.api.funding;
 
-import com.facet.api.funding.model.FundingProduct;
-import com.facet.api.funding.model.FundingDto;
+import com.facet.api.funding.model.FundProduct;
+import com.facet.api.funding.model.FundDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,18 +17,18 @@ import java.util.Optional;
 public class FundingService {
     private final FundingRepository fundingRepository;
 
-    public  List<FundingDto.FundingListRes> list() {
-        List<FundingProduct> res = fundingRepository.findAll();
-        List<FundingDto.FundingListRes> result = new ArrayList<>();
+    public  List<FundDto.FundingListRes> list() {
+        List<FundProduct> res = fundingRepository.findAll();
+        List<FundDto.FundingListRes> result = new ArrayList<>();
 
-        for(FundingProduct data: res){
-            result.add(FundingDto.FundingListRes.from(data));
+        for(FundProduct data: res){
+            result.add(FundDto.FundingListRes.from(data));
         }
 
         return result;
     }
 
-    public FundingDto.PageRes pageList(int page, int size, String currentFilter, String categories) {
+    public FundDto.PageRes pageList(int page, int size, String currentFilter, String categories) {
         // 기본 정렬: 최신순(idx 오름차순으로 )
         Sort sort = Sort.by("idx").ascending();
         String sortType = currentFilter;
@@ -44,28 +44,28 @@ public class FundingService {
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         if(categories.equals("all")){
-            Page<FundingProduct> result = fundingRepository.findAll(pageRequest);
-            return FundingDto.PageRes.from(result);
+            Page<FundProduct> result = fundingRepository.findAll(pageRequest);
+            return FundDto.PageRes.from(result);
         }
-        Page<FundingProduct> result = fundingRepository.findByCategory(categories,pageRequest);
-        return FundingDto.PageRes.from(result);
+        Page<FundProduct> result = fundingRepository.findByCategory(categories,pageRequest);
+        return FundDto.PageRes.from(result);
     }
 
-    public FundingDto.DescListRes descList(Long idx) {
-        Optional<FundingProduct> dto = fundingRepository.findById(idx);
+    public FundDto.DescListRes descList(Long idx) {
+        Optional<FundProduct> dto = fundingRepository.findById(idx);
 
         if(dto.isPresent()){
-            FundingProduct data = dto.get();
-            return FundingDto.DescListRes.from(data);
+            FundProduct data = dto.get();
+            return FundDto.DescListRes.from(data);
         }
         return null;
     }
 
-    public FundingDto.DetailRes detailList(int page, int size, int endDay) {
+    public FundDto.DetailRes detailList(int page, int size, int endDay) {
         Sort sort = Sort.by("endDays").ascending();  // day 기준으로 정렬
         PageRequest pageRequest = PageRequest.of(page, size, sort);
-        Page<FundingProduct> result = fundingRepository.findAll(pageRequest);
+        Page<FundProduct> result = fundingRepository.findAll(pageRequest);
         // Page<FundingProduct> result = fundingRepository.findByDays(endDay,pageRequest);
-        return FundingDto.DetailRes.from(result);
+        return FundDto.DetailRes.from(result);
     }
 }

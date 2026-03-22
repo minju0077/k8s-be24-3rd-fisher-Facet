@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FundingMaker {
+public class FundMaker {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -30,7 +30,7 @@ public class FundingMaker {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "product_idx")
-    private FundingProduct fundingProduct;
+    private FundProduct fundProduct;
 
 
 }

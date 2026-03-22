@@ -1,7 +1,7 @@
 package com.facet.api.funding;
 
 import com.facet.api.common.model.BaseResponse;
-import com.facet.api.funding.model.FundingDto;
+import com.facet.api.funding.model.FundDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ public class FundingController {
 
     @GetMapping("/fundinglist")
     public ResponseEntity list(){
-        List<FundingDto.FundingListRes> result = fundingService.list();
+        List<FundDto.FundingListRes> result = fundingService.list();
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
@@ -27,7 +27,7 @@ public class FundingController {
             @RequestParam(defaultValue = "all") String currentFilter,
             @RequestParam(defaultValue = "all") String currentCategories
     ){
-        FundingDto.PageRes result = fundingService.pageList(page, size, currentFilter,currentCategories);
+        FundDto.PageRes result = fundingService.pageList(page, size, currentFilter,currentCategories);
 
         return ResponseEntity.ok(BaseResponse.success(result));
     }
@@ -35,7 +35,7 @@ public class FundingController {
 
     @GetMapping("/descList/{idx}")
     public ResponseEntity descList(@PathVariable Long idx){
-        FundingDto.DescListRes result = fundingService.descList(idx);
+        FundDto.DescListRes result = fundingService.descList(idx);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
@@ -46,7 +46,7 @@ public class FundingController {
             @RequestParam(defaultValue = "1") int endDay
 
     ){
-        FundingDto.DetailRes result =  fundingService.detailList(page,size,endDay);
+        FundDto.DetailRes result =  fundingService.detailList(page,size,endDay);
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 }

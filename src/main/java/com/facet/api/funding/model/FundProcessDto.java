@@ -6,13 +6,13 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class FundingProcessDto {
+public class FundProcessDto {
     private Long idx;
     private String title;
     private String contents;
 
-    public static FundingProcessDto from(FundingProcess entity){
-        return FundingProcessDto.builder()
+    public static FundProcessDto from(FundProcess entity){
+        return FundProcessDto.builder()
                 .idx(entity.getIdx())
                 .title(entity.getTitle())
                 .contents(entity.getContents())

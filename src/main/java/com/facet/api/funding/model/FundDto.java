@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-public class FundingDto {
+public class FundDto {
 
     @Builder
     @Getter
@@ -17,12 +17,12 @@ public class FundingDto {
         private String brand;
         private String img;
         private Long percent;
-        private Long price;
+        private int price;
         private Long supporters;
         private Long days;
         private String status;
 
-        public static FundingDto.FundingListRes from(FundingProduct entity){
+        public static FundDto.FundingListRes from(FundProduct entity){
             return FundingListRes.builder()
                     .idx(entity.getIdx())
                     .category(entity.getCategory())
@@ -48,9 +48,9 @@ public class FundingDto {
         private int currentPage;
         private int currentSize;
 
-        public static PageRes from(Page<FundingProduct> entity){
+        public static PageRes from(Page<FundProduct> entity){
             return PageRes.builder()
-                    .fundingList(entity.get().map(FundingDto.FundingListRes::from).toList())
+                    .fundingList(entity.get().map(FundDto.FundingListRes::from).toList())
                     .totalPage(entity.getTotalPages())
                     .totalCount(entity.getTotalElements())
                     .currentPage(entity.getPageable().getPageNumber())
@@ -69,20 +69,20 @@ public class FundingDto {
         private String brand;
         private String img;
         private Long percent;
-        private Long price;
+        private int price;
         private Long targetPrice;  // 모인 금액
         private Long supporters; // 서포터즈
         private Long days;
         private String endDays;
         private String status;
         private String type;
-        private List<FundingRewardsDto> fundingRewardsList;
-        private FundingStory fundingStory;
-        private FundingMaker fundingMaker;
-        private List<FundingProcessDto> fundingProcessList;
-        private List<FundingImgDto> fundingImgList;
+        private List<FundRewardsDto> fundingRewardsList;
+        private FundStory fundStory;
+        private FundMaker fundMaker;
+        private List<FundProcessDto> fundProcessList;
+        private List<FundImgDto> fundImgList;
 
-        public static DescListRes from(FundingProduct entity){
+        public static DescListRes from(FundProduct entity){
             return DescListRes.builder()
                     .idx(entity.getIdx())
                     .category(entity.getCategory())
@@ -97,11 +97,11 @@ public class FundingDto {
                     .endDays(entity.getEndDays())
                     .status(entity.getStatus())
                     .type(entity.getType())
-                    .fundingRewardsList(entity.getFundingRewardsList().stream().map(FundingRewardsDto::from).toList())
-                    .fundingStory(entity.getFundingStory() != null ? FundingStoryDto.from(entity.getFundingStory()) : null)
-                    .fundingMaker(entity.getFundingMaker() != null ? FundingMakerDto.from(entity.getFundingMaker()) : null)
-                    .fundingProcessList(entity.getFundingProcessList().stream().map(FundingProcessDto::from).toList())
-                    .fundingImgList(entity.getFundingImgList().stream().map(FundingImgDto::from).toList())
+                    .fundingRewardsList(entity.getFundRewardsList().stream().map(FundRewardsDto::from).toList())
+                    .fundStory(entity.getFundStory() != null ? FundStoryDto.from(entity.getFundStory()) : null)
+                    .fundMaker(entity.getFundMaker() != null ? FundMakerDto.from(entity.getFundMaker()) : null)
+                    .fundProcessList(entity.getFundProcessList().stream().map(FundProcessDto::from).toList())
+                    .fundImgList(entity.getFundImgList().stream().map(FundImgDto::from).toList())
                     .build();
         }
     }
@@ -116,14 +116,14 @@ public class FundingDto {
         private String brand;
         private String img;
         private Long percent;
-        private Long price;
+        private int price;
         private Long targetPrice;  // 모인 금액
         private Long supporters; // 서포터즈
         private Long days;
         private String status;
         private String type;
 
-        public static DetailListRes from(FundingProduct entity){
+        public static DetailListRes from(FundProduct entity){
             return DetailListRes.builder()
                     .idx(entity.getIdx())
                     .category(entity.getCategory())
@@ -151,9 +151,9 @@ public class FundingDto {
         private int currentPage;
         private int currentSize;
 
-        public static DetailRes from(Page<FundingProduct> entity){
+        public static DetailRes from(Page<FundProduct> entity){
             return DetailRes.builder()
-                    .fundingList(entity.get().map(FundingDto.FundingListRes::from).toList())
+                    .fundingList(entity.get().map(FundDto.FundingListRes::from).toList())
                     .totalPage(entity.getTotalPages())
                     .totalCount(entity.getTotalElements())
                     .currentPage(entity.getPageable().getPageNumber())

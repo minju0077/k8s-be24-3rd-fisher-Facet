@@ -6,12 +6,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class FundingImgDto {
+public class FundImgDto {
     private Long idx;
     private String imgDetail;
 
-    public static FundingImgDto from(FundingImg entity){
-        return FundingImgDto.builder()
+    public static FundImgDto from(FundImg entity){
+        return FundImgDto.builder()
                 .idx(entity.getIdx())
                 .imgDetail(entity.getImgDetail())
                 .build();

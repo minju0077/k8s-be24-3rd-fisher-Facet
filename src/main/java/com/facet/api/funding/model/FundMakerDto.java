@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FundingMakerDto {
+public class FundMakerDto {
 
     private Long idx;
     private String experience;
@@ -18,8 +18,8 @@ public class FundingMakerDto {
     private String promise;
     private String makerStory;
 
-    public static FundingMaker from(FundingMaker entity){
-        return FundingMaker.builder()
+    public static FundMaker from(FundMaker entity){
+        return FundMaker.builder()
                 .idx(entity.getIdx())
                 .experience(entity.getExperience())
                 .style(entity.getExperience())
