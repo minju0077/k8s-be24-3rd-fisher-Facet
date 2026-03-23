@@ -11,8 +11,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,10 +34,10 @@ public class AuctionBidController {
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
-    @MessageMapping("/bid")
-    @SendTo("/topic/{productIdx}")
-    public String message(){
-        System.out.println("test");
-        return "zzz";
+    private final SimpMessagingTemplate messagingTemplate;
+    @MessageMapping("/bid/{productIdx}")
+    public void sendBidMessage(@DestinationVariable Long productIdx, String message) {
+        System.out.println("productIdx : " + productIdx);
+        messagingTemplate.convertAndSend("/topic/"+productIdx, message);
     }
 }
