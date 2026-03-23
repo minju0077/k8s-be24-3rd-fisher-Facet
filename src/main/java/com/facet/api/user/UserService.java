@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -171,8 +172,8 @@ public class UserService implements UserDetailsService {
                 AucProdImage prodImage = auctionImageRepository.findByAucProductIdx(product.getIdx());
                 String imageUrl = (prodImage != null) ? prodImage.getImagePath() : "";
 
-                // DB의 status 값(숫자)에 따라 문자열 변환
-                String statusStr = (product.getStatus() == 1) ? "진행중" : "종료";
+                LocalDateTime now = LocalDateTime.now();
+                String statusStr = now.isAfter(product.getEndAt()) ? "종료" : "진행중";
 
                 historyList.add(UserDto.HistoryDto.builder()
                         .type("AUCTION")

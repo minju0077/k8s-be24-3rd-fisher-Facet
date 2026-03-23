@@ -87,6 +87,4 @@ public class AucProduct {
     // 배송 기간
     private String shippingDuration;
 
-    @Column(nullable = false)
-    private Integer status;
 }
