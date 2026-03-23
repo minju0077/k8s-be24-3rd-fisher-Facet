@@ -4,6 +4,8 @@ import com.facet.api.common.model.BaseResponse;
 import com.facet.api.user.model.AuthUserDetails;
 import com.facet.api.user.model.UserDto;
 import com.facet.api.utils.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,12 +23,14 @@ import java.util.Map;
 @RequestMapping("/user")
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "회원 기능")
 public class UserController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/signup")
+    @Operation(summary = "회원가입 기능", description = "Facet 서비스 이용을 위한 새로운 사용자 계정 생성")
     public ResponseEntity signup(@RequestBody UserDto.SignupReq dto) {
         UserDto.SignupRes result = userService.signup(dto);
 
@@ -35,6 +39,7 @@ public class UserController {
 
 
     @PostMapping("/login")
+    @Operation(summary = "로그인 기능", description = "이메일과 비밀번호를 검증하여 ATOKEN 쿠키를 발급.")
     public ResponseEntity login(@RequestBody UserDto.LoginReq dto) {
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword(), null);
@@ -61,6 +66,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
+    @Operation(summary = "로그아웃 기능", description = "브라우저에 저장된 ATOKEN 쿠키를 즉시 만료시켜 로그아웃 처리")
     public ResponseEntity<String> logout() {
         // 1. 만료 시간이 0인 쿠키 생성
         ResponseCookie cookie = ResponseCookie.from("ATOKEN", "")
@@ -78,6 +84,7 @@ public class UserController {
     }
 
     @GetMapping("/verify")
+    @Operation(summary = "이메일 인증 처리 기능", description = "회원가입 후 발급된 UUID를 검증하여 계정을 활성화하고 프론트로 리다이렉트")
     public ResponseEntity verify(String uuid) {
         userService.verify(uuid);
         // 인증 성공하면 프론트로 리다이렉트
@@ -85,6 +92,7 @@ public class UserController {
     }
 
     @GetMapping("/callback")
+    @Operation(summary = "소셜 로그인 사용자 정보 불러오기 기능 ", description = "")
     public ResponseEntity callback(@AuthenticationPrincipal AuthUserDetails user) {
 
         UserDto.LoginRes rseult = UserDto.LoginRes.builder()
@@ -117,6 +125,7 @@ public class UserController {
     }
 
     @GetMapping("/getuserinfo")
+    @Operation(summary = "내 정보 조회 기능", description = "현재 로그인된 사용자의 이름, 연락처, 주소, 생일 등 전체 프로필 정보를 조회, 연락처와 주소, 생일 정보는 사용자가 이전에 [내 정보 수정]을 통해 저장한 경우에만 표시.")
     public ResponseEntity getUserInfo(
             @AuthenticationPrincipal AuthUserDetails user){
         UserDto.UserInfoRes result = userService.getUserInfo(user.getUsername());
@@ -124,6 +133,7 @@ public class UserController {
     }
 
     @PostMapping("/updateuserinfo")
+    @Operation(summary = "내 정보 수정 기능", description = "현재 로그인된 사용자의 핸드폰 번호, 주소, 생일 정보를 업데이트")
     public ResponseEntity updateUserInfo(
             @AuthenticationPrincipal AuthUserDetails user,
             @RequestBody UserDto.UserInfoReq dto
@@ -133,6 +143,7 @@ public class UserController {
     }
 
     @PostMapping("/updatepassword")
+    @Operation(summary = "비밀번호 변경 기능", description = "현재 사용 중인 비밀번호를 확인한 후 새로운 비밀번호로 변경")
     public ResponseEntity updatepassword(
             @AuthenticationPrincipal AuthUserDetails user,
             @RequestBody UserDto.PasswordUpdateReq dto
@@ -142,6 +153,7 @@ public class UserController {
     }
 
     @GetMapping("/history")
+    @Operation(summary = "마이페이지 활동 내역(주문 / 참여 내역)", description = "사용자가 참여한 펀딩 및 경매 내역과 상태별 요약 통계를 조회")
     public ResponseEntity getMyHistory(@AuthenticationPrincipal AuthUserDetails userDetails) {
 
         // 1. 방금 만든 UserService의 메서드를 호출해서 데이터 가져오기

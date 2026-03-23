@@ -48,7 +48,6 @@ dependencies {
     // 요구사항 명세서용 Swagger 라이브러리
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
     // 포트원
     implementation 'io.portone:server-sdk:0.23.0'

@@ -6,6 +6,8 @@ import com.facet.api.point.model.PointDto;
 import com.facet.api.user.UserRepository;
 import com.facet.api.user.model.AuthUserDetails;
 import com.facet.api.user.model.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,12 +18,14 @@ import static com.facet.api.common.model.BaseResponseStatus.*;
 @RestController
 @RequestMapping("/point")
 @RequiredArgsConstructor
+@Tag(name = "유저 포인트 결제 기능")
 public class PointController {
     private final PointService pointService;
     private final UserRepository userRepository;
 
     //[1단계] 프론트에서 결제 금액 선택하고 충전하기 눌렀을 때
     @PostMapping("/create")
+    @Operation(summary = "포인트 충전 결제 주문서 생성", description = "DB에 '결제 대기' 상태의 주문서를 생성하고 실제 결제(PG사 연동) 진행에 필요한 주문 번호 등의 데이터를 반환")
     public ResponseEntity<BaseResponse<PointDto.CreateRes>> createPointOrder(
             @AuthenticationPrincipal AuthUserDetails userDetails,
             @RequestBody PointDto.CreateReq dto) {
@@ -35,6 +39,7 @@ public class PointController {
 
     //[2단계] 결제 검증 및 충전
     @PostMapping("/verify")
+    @Operation(summary = "결제 검증 및 실제 포인트 충전", description = "전달받은 결제 내역의 금액과 위변조 여부를 검증하고 이상이 없을 경우 사용자의 실제 보유 포인트를 충전 처리")
     public ResponseEntity<BaseResponse> verifyAndChargePoint(
             @AuthenticationPrincipal AuthUserDetails userDetails,
             @RequestBody PointDto.VerifyReq dto) {
@@ -51,6 +56,7 @@ public class PointController {
     }
 
     @GetMapping("/current")
+    @Operation(summary = "현재 보유 포인트(잔액) 조회", description = "로그인된 사용자가 현재 보유하고 있는 포인트 잔액을 조회 , 경매 입찰이나 펀딩 결제를 진행하기 전 잔액 확인 용도로 활용")
     public ResponseEntity<BaseResponse<PointDto.CurrentRes>> getCurrentPoint(
             @AuthenticationPrincipal AuthUserDetails userDetails){
 
