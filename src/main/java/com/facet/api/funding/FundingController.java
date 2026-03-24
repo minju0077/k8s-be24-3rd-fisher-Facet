@@ -30,9 +30,10 @@ public class FundingController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "9") int size,
             @RequestParam(defaultValue = "all") String currentFilter,
-            @RequestParam(defaultValue = "all") String currentCategories
+            @RequestParam(defaultValue = "all") String currentCategories,
+            @RequestParam(defaultValue = "live") String currentStatus
     ){
-        FundDto.PageRes result = fundingService.pageList(page, size, currentFilter,currentCategories);
+        FundDto.PageRes result = fundingService.pageList(page, size, currentFilter,currentCategories,currentStatus);
 
         return ResponseEntity.ok(BaseResponse.success(result));
     }
