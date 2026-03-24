@@ -92,7 +92,9 @@ public class UserController {
     }
 
     @GetMapping("/callback")
-    @Operation(summary = "소셜 로그인 사용자 정보 불러오기 기능 ", description = "")
+    @Operation(summary = "소셜 로그인 사용자 정보 불러오기 기능 ", description = "소셜 로그인 이후 사용자의 정보를 불러오기 위한 기능 \n"+
+            "--- \n" + "**※ 주의:** JWT 인증 쿠키가 반드시 포함되어야 합니다."
+    )
     public ResponseEntity callback(@AuthenticationPrincipal AuthUserDetails user) {
 
         UserDto.LoginRes rseult = UserDto.LoginRes.builder()
@@ -107,6 +109,7 @@ public class UserController {
 
     // 토큰이 유효한지 확인하는 메소드
     @GetMapping("/validate")
+    @Operation(summary = "토큰이 유효한지 확인하는 기능", description = " 토큰이 만료되지는 않았는지, 위조되지 않았는지 최종 확인")
     public ResponseEntity validate(
             @RequestHeader("ATOKEN") String token
     ) {
@@ -125,7 +128,8 @@ public class UserController {
     }
 
     @GetMapping("/getuserinfo")
-    @Operation(summary = "내 정보 조회 기능", description = "현재 로그인된 사용자의 이름, 연락처, 주소, 생일 등 전체 프로필 정보를 조회, 연락처와 주소, 생일 정보는 사용자가 이전에 [내 정보 수정]을 통해 저장한 경우에만 표시.")
+    @Operation(summary = "내 정보 조회 기능", description = "현재 로그인된 사용자의 이름, 연락처, 주소, 생일 등 전체 프로필 정보를 조회, 연락처와 주소, 생일 정보는 사용자가 이전에 [내 정보 수정]을 통해 저장한 경우에만 표시. \n"
+    +"--- \n" + "**※ 주의:** JWT 인증 쿠키가 반드시 포함되어야 합니다.")
     public ResponseEntity getUserInfo(
             @AuthenticationPrincipal AuthUserDetails user){
         UserDto.UserInfoRes result = userService.getUserInfo(user.getUsername());
@@ -133,7 +137,8 @@ public class UserController {
     }
 
     @PostMapping("/updateuserinfo")
-    @Operation(summary = "내 정보 수정 기능", description = "현재 로그인된 사용자의 핸드폰 번호, 주소, 생일 정보를 업데이트")
+    @Operation(summary = "내 정보 수정 기능", description = "현재 로그인된 사용자의 핸드폰 번호, 주소, 생일 정보를 업데이트 \n"
+            +"--- \n" + "**※ 주의:** JWT 인증 쿠키가 반드시 포함되어야 합니다.")
     public ResponseEntity updateUserInfo(
             @AuthenticationPrincipal AuthUserDetails user,
             @RequestBody UserDto.UserInfoReq dto
@@ -143,7 +148,8 @@ public class UserController {
     }
 
     @PostMapping("/updatepassword")
-    @Operation(summary = "비밀번호 변경 기능", description = "현재 사용 중인 비밀번호를 확인한 후 새로운 비밀번호로 변경")
+    @Operation(summary = "비밀번호 변경 기능", description = "현재 사용 중인 비밀번호를 확인한 후 새로운 비밀번호로 변경 \n"
+            +"--- \n" + "**※ 주의:** JWT 인증 쿠키가 반드시 포함되어야 합니다.")
     public ResponseEntity updatepassword(
             @AuthenticationPrincipal AuthUserDetails user,
             @RequestBody UserDto.PasswordUpdateReq dto
@@ -153,7 +159,8 @@ public class UserController {
     }
 
     @GetMapping("/history")
-    @Operation(summary = "마이페이지 활동 내역(주문 / 참여 내역)", description = "사용자가 참여한 펀딩 및 경매 내역과 상태별 요약 통계를 조회")
+    @Operation(summary = "마이페이지 활동 내역(주문 / 참여 내역)", description = "사용자가 참여한 펀딩 및 경매 내역과 상태별 요약 통계를 조회 \n"
+            +"--- \n" + "**※ 주의:** JWT 인증 쿠키가 반드시 포함되어야 합니다.")
     public ResponseEntity getMyHistory(@AuthenticationPrincipal AuthUserDetails userDetails) {
 
         // 1. 방금 만든 UserService의 메서드를 호출해서 데이터 가져오기
