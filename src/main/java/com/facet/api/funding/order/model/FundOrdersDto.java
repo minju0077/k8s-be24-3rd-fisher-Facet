@@ -44,14 +44,14 @@ public class FundOrdersDto {
     @Getter
     public static class OrdersReq {
         private Long productIdx;
-        private Long price;
+        private Long targetPrice;
         private List<OrdersItemReq> ordersItems;
 
         public FundOrders toEntity(User user, FundProduct product) {
             FundOrders orders = FundOrders.builder()
                     .ordersIdx(user.getIdx())
                     .status("PENDING")
-                    .price(this.price)
+                    .price(this.targetPrice)
                     .fundProduct(product)
                     .build();
 

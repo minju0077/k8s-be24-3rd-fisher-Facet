@@ -20,7 +20,7 @@ public class FundingController {
     @GetMapping("/fundinglist")
     @Operation(summary = "메인 화면용 펀딩 리스트 기능", description = "메인 화면에 노출될 기본적인 펀딩 상품 목록을 조회.")
     public ResponseEntity list(){
-        List<FundDto.FundListRes> result = fundingService.list();
+        List<FundDto.FundingListRes> result = fundingService.list();
         return ResponseEntity.ok(BaseResponse.success(result));
     }
 
@@ -32,7 +32,7 @@ public class FundingController {
             @RequestParam(defaultValue = "all") String currentFilter,
             @RequestParam(defaultValue = "all") String currentCategories
     ){
-        FundDto.FundPageRes result = fundingService.pageList(page, size, currentFilter,currentCategories);
+        FundDto.PageRes result = fundingService.pageList(page, size, currentFilter,currentCategories);
 
         return ResponseEntity.ok(BaseResponse.success(result));
     }
