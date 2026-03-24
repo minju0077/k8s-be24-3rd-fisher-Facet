@@ -9,4 +9,9 @@ public interface FundingRepository extends JpaRepository<FundProduct,Long> {
     Page<FundProduct> findByCategory(String category, PageRequest sort);
 
     Page<FundProduct> findByEndDays(int endDay, PageRequest pageRequest);
+
+
+    Page<FundProduct> findByStatus(String status, PageRequest pageRequest);
+
+    Page<FundProduct> findByCategoryAndStatus(String categories, String status, PageRequest pageRequest);
 }
