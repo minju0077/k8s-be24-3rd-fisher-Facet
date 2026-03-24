@@ -59,7 +59,14 @@
 
 ---
 
-## 🏗️ 4. 기능 상세 테스트 (Feature Test)
+## 🏛️️ 4. 시스템 아키텍처 (System Architecture)
+
+> 트래픽을 안정적으로 처리하고, 실시간 경매의 동시성 문제를 해결하기 위해 아래와 같은 아키텍처로 설계되었습니다.
+
+<div style="text-align: center;">
+  <img src="./img/시스템 아키텍처.png" width="85%">
+</div>
+
 
 <details>
 <summary><b>🔐 인증 및 보안</b></summary>
