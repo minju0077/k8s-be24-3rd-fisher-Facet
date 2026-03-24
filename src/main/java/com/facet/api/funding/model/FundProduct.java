@@ -4,6 +4,7 @@ import com.facet.api.funding.order.model.FundOrders;
 import com.facet.api.funding.order.model.FundOrdersItem;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
@@ -28,15 +29,15 @@ public class FundProduct {
     @Column(nullable = false)
     private String img;
 
+    @Setter
     private Long percent;
 
-    @Column(nullable = false)
-    private int price;
-
+    @Setter
     private Long targetPrice;  // 모인 금액
 
     private Long goalPrice; // 목표 금액
 
+    @Setter
     private Long supporters; // 서포터즈
 
 

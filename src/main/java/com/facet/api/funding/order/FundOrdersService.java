@@ -3,6 +3,7 @@ package com.facet.api.funding.order;
 import com.facet.api.common.exception.BaseException;
 import com.facet.api.common.model.BaseResponseStatus;
 import com.facet.api.funding.FundingRepository;
+import com.facet.api.funding.model.FundProduct;
 import com.facet.api.funding.model.FundRewards;
 import com.facet.api.funding.order.model.FundOrders;
 import com.facet.api.funding.order.model.FundOrdersDto;
@@ -31,6 +32,7 @@ import static com.facet.api.common.model.BaseResponseStatus.*;
 public class FundOrdersService {
     private final FundOrdersRepository fundOrdersRepository;
     private final FundRewardRepository fundRewardRepository;
+    private final FundingRepository fundingRepository;
 
     private final PaymentClient pg;
 
@@ -90,6 +92,27 @@ public class FundOrdersService {
                 orders.setStatus("PAID");
                 orders.setPgPaymentId(dto.getPaymentId());
                 fundOrdersRepository.save(orders);
+
+                // [추가] 1. 주문에 연결된 상품(Product) 엔티티 가져오기
+                FundProduct product = orders.getFundProduct();
+
+                // [추가] 2. 상품의 집계 데이터 업데이트
+                // 총 모금액 업데이트 (기존 금액 + 현재 주문 금액)
+                long updatedAmount = (product.getTargetPrice() != null ? product.getTargetPrice() : 0L) + orders.getPrice();
+                product.setTargetPrice(updatedAmount);
+
+                // 총 서포터 수 업데이트 (+1명)
+                long updatedSupporters = (product.getSupporters() != null ? product.getSupporters() : 0L) + 1;
+                product.setSupporters(updatedSupporters);
+
+                // 달성률(퍼센트) 업데이트: (현재 금액 * 100) / 목표 금액
+                if (product.getGoalPrice() != null && product.getGoalPrice() > 0) {
+                    long currentPercent = (updatedAmount * 100) / product.getGoalPrice();
+                    product.setPercent(currentPercent); // 정렬을 위해 achievementRate 필드에 저장
+                }
+
+                // [추가] 3. 변경된 상품 정보 저장 (Dirty Checking이 작동하지만 명시적으로 호출 가능)
+                fundingRepository.save(product);
 
                 // 각 리워드 아이템의 재고를 즉시 차감
                 for (FundOrdersItem item : orders.getOrdersItems()) {

@@ -23,6 +23,14 @@ management:
     tags:
       application: ${spring.application.name}
 
+
+  tracing:
+    sampling:
+      probability: 1.0  # 모든 요청에 대한 데이터 수집
+  otlp:
+    tracing:
+      endpoint: "http://192.168.23.50:4318/v1/traces" # Jaeger 수집 주소
+
 spring:
   security:
     oauth2:
