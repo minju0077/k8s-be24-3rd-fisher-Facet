@@ -33,9 +33,12 @@
 
 🔗 **상세 내용 확인하기 (클릭하여 이미지 펼치기)**
 <details>
-<summary>📑 요구사항 명세서 이미지 보기</summary>
-<br>
-<img src="./docs/요구사항명세서.png" alt="요구사항 명세서" width="100%">
+<summary>📑 요구사항 명세서 이미지 보기</summary><br>
+
+* [요구사항 명세서 PDF](./API정의서.pdf)
+
+[Swagger 요구사항 명세서](https://api.facet7.kro.kr:442/swagger-ui/index.html)
+
 <br>
 </details>
 
