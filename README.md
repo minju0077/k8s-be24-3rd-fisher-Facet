@@ -31,7 +31,7 @@
 기존 이커머스의 단순 구매 방식을 넘어, 가치 있는 하이엔드 주얼리를 획득하는 '실시간 경매'와 독창적인 1인 메이커의 성장을 응원하는 '프리오더 펀딩'을 결합했습니다. 소비자는 리스크 없는 예약 결제로 새로운 쇼핑 경험과 가격 혜택을 누리고, 판매자(메이커)는 재고 부담 없이 대량 판매와 안정적인 수익을 확보하는 상생 모델을 지향하는 플랫폼입니다.
 
 
-✨ 3. 주요 기능
+✨ **주요 기능**
 - **실시간 경매 시스템**: 고가의 하이엔드 주얼리 자산에 대한 실시간 입찰 및 자동 낙찰 처리
 - **목표 달성형 프리오더 펀딩**: 선결제를 통해 펀딩에 참여한 후, 목표 인원 및 금액이 달성된 경우에만 지정된 날짜에 최종 결제가 승인되는 안전한 조건부 결제 시스템
 - **통합 인증 및 소셜 로그인**: 회원 가입시 이메일 인증과, Google, Kakao OAuth 2.0을 활용한 간편 로그인
@@ -51,7 +51,7 @@
 
 ---
 
-## 🛠️ 4. 기술 스택
+## 🛠️ 3. 기술 스택
 
 ### 💻 Backend
 <img src="https://img.shields.io/badge/Java 17-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/Spring Boot 3.x-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"> <img src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
@@ -69,7 +69,7 @@
 
 ---
 
-## 🏛️️ 5. 시스템 아키텍처 (System Architecture)
+## 🏛️️ 4. 시스템 아키텍처 (System Architecture)
 
 > 트래픽을 안정적으로 처리하고, 실시간 경매의 동시성 문제를 해결하기 위해 아래와 같은 아키텍처로 설계되었습니다.
 
@@ -77,7 +77,7 @@
   <img src="./img/시스템 아키텍처.png" width="85%">
 </div>
 
-## 📋 6. 상세 기능 (Detailed Features)
+## 📋 5. 상세 기능 (Detailed Features)
 
 FACET 서비스의 전체 기능 요약입니다. 핵심 비즈니스 로직인 **'조건부 예약 펀딩'**의 상세한 결제 프로세스와 기술적 고민(동시성 제어, 결제 무결성)은 아래 별도 페이지에서 자세히 확인하실 수 있습니다.
 
@@ -110,57 +110,13 @@ FACET 서비스의 전체 기능 요약입니다. 핵심 비즈니스 로직인 
 
 
 
-<details>
-<summary><b>🔐 인증 및 보안</b></summary>
-<div markdown="1">
 
-  ### 회원가입 및 로그인
-  - **회원가입**
-  - **로그인**
+## 🛠️ 6. Facet 백엔드 프로젝트 API Swagger
 
-  | 회원가입 | 로그인 |
-  | :---: | :---: |
-  | ![회원가입](./docs/회원가입.gif) | ![로그인](./docs/로그인.gif) |
+FACET의 모든 API는 **Swagger UI**를 통해 시각화되어 있으며, 별도의 툴 없이 브라우저에서 직접 테스트가 가능합니다.
+**[FACET] 기획안** | `PDF` | 서비스 배경, 타겟 분석, 기대 효과 |
 
-</div>
-</details>
-
-<details>
-<summary><b>💎 핵심 서비스</b></summary>
-<div markdown="1">
-
-  ### 실시간 경매 및 주얼리 펀딩
-  - **경매**
-  - **펀딩**
-
-  | 경매 (Auction) | 펀딩 (Funding) |
-  | :---: | :---: |
-  | ![경매](./docs/경매.gif) | ![펀딩](./docs/펀딩.gif) |
-
-</div>
-</details>
-
-<details>
-<summary><b>🔍 검색 및 탐색 </b></summary>
-<div markdown="1">
-
-  ###  검색 시스템
-
-
-  ![검색기능](./docs/검색기능.gif)
-
-</div>
-</details>
-
-<details>
-<summary><b>💰 포인트 시스템 </b></summary>
-<div markdown="1">
-
-  ### 활동 포인트 적립 및 관리
-
-  ![포인트적립](./docs/포인트적립.gif)
-
-</div>
-</details>
+[[**📄 Swagger를 활용한 API 테스트 결과**](./docs/facet-swagger-ui.pdf) |
+> **Note:** 본 서비스는 JWT 기반의 인증을 사용합니다. 인증이 필요한 API 테스트 시 반드시 상단의 `Authorize` 버튼을 통해 토큰을 먼저 등록해 주세요.
 
 ---
