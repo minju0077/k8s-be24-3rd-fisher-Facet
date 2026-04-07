@@ -93,27 +93,33 @@ spec:
     }
     stage('Blue-Green Deploy') {
       steps {
-        script {
-          // 홀수면 blue, 짝수면 green
-          def color = (env.BUILD_ID.toInteger() % 2 == 0) ? "green" : "blue"
-          // 쿠버네티스에 배포 명령 (방금 만든 번호 태그 사용)
-          sh "kubectl set image deployment/backend-${color} backend=${IMAGE_NAME}:${env.BUILD_ID}"
+        // 헬름 기본 에이전트인 jnlp 컨테이너 환경을 사용합니다.
+        container('jnlp') {
+          script {
+            def buildNum = env.BUILD_ID.toInteger()
+            def targetColor = (buildNum % 2 == 0) ? "green" : "blue"
+
+            echo "현재 빌드 번호 ${buildNum}에 따라 ${targetColor} 배포를 시작합니다."
+
+            // kubectl 명령어가 이제 정상 작동할 것입니다.
+            sh "kubectl set image deployment/backend-${targetColor} backend=alswn00/backend:${buildNum}"
+          }
         }
       }
     }
+
     stage('Service Traffic Shift') {
       steps {
-        script {
-          // 이번에 배포된 색상 (홀수: blue, 짝수: green)
-          def buildNum = env.BUILD_ID.toInteger()
-          def targetColor = (buildNum % 2 == 0) ? "green" : "blue"
+        container('jnlp') {
+          script {
+            def buildNum = env.BUILD_ID.toInteger()
+            def targetColor = (buildNum % 2 == 0) ? "green" : "blue"
 
-          echo "서비스 트래픽을 ${targetColor}로 전환합니다."
+            echo "서비스 트래픽을 ${targetColor}로 전환합니다."
 
-          // kubectl patch 명령으로 서비스의 Selector를 동적으로 변경
-          sh """
-            kubectl patch svc backend-service -p '{"spec":{"selector":{"version":"${targetColor}"}}}'
-          """
+            // 서비스의 셀렉터를 변경하여 트래픽 방향을 바꿉니다.
+            sh "kubectl patch svc backend-service -p '{\"spec\":{\"selector\":{\"version\":\"${targetColor}\"}}}'"
+          }
         }
       }
     }
