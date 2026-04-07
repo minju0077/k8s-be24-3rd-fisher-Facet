@@ -59,6 +59,9 @@ spec:
     stage('Gradle Build') {
       steps {
         container('gradle') {
+          sh 'pwd'
+          sh 'ls -al'
+          sh 'ls -al ..'
           sh '''
             chmod +x ./gradlew || true
             ./gradlew --no-daemon clean bootJar
