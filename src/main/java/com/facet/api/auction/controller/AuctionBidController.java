@@ -41,4 +41,9 @@ public class AuctionBidController {
         System.out.println("productIdx : " + productIdx);
         messagingTemplate.convertAndSend("/topic/"+productIdx, message);
     }
+
+    @PostMapping("/success")
+    public ResponseEntity success(){
+        return ResponseEntity.ok("성공");
+    }
 }
