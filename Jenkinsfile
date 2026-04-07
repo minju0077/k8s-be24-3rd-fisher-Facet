@@ -77,7 +77,6 @@ spec:
               --context=${WORKSPACE} \
               --dockerfile=${WORKSPACE}/Dockerfile \
               --destination=${IMAGE_NAME}:${IMAGE_TAG} \
-              --destination=${IMAGE_NAME}:latest \
               --single-snapshot \
               --use-new-run \
               --cache=true \
@@ -90,6 +89,16 @@ spec:
     stage('Result') {
       steps {
         echo "Pushed: ${IMAGE_NAME}:${IMAGE_TAG}"
+      }
+    }
+    stage('Blue-Green Deploy') {
+      steps {
+        script {
+          // 홀수면 blue, 짝수면 green
+          def color = (env.BUILD_ID.toInteger() % 2 == 0) ? "green" : "blue"
+          // 쿠버네티스에 배포 명령 (방금 만든 번호 태그 사용)
+          sh "kubectl set image deployment/backend-${color} backend=${IMAGE_NAME}:${env.BUILD_ID}"
+        }
       }
     }
   }
