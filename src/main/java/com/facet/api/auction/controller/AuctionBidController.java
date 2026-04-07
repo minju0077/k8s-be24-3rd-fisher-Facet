@@ -44,11 +44,11 @@ public class AuctionBidController {
 
     @PostMapping("/success")
     public ResponseEntity success(){
-        return ResponseEntity.ok("성공");
+        return ResponseEntity.ok("성공1");
     }
 
     @PostMapping("/fail")
     public ResponseEntity fail(){
-        return ResponseEntity.ok("실패");
+        return ResponseEntity.ok("실패1");
     }
 }
