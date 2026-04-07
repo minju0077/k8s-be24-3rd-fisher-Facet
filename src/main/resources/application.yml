@@ -1,14 +1,14 @@
 server:
-  port: 442
+  port: 8080
   error:
     whitelabel:
       enabled: false  # 기본 whitelabel 에러 페이지 비활성화
     path: /error
-  ssl:
-    enabled: true
-    key-store: file:./keystore.p12
-    key-store-type: "PKCS12"
-    key-store-password: qwer1234
+#  ssl:
+#    enabled: true
+#    key-store: file:./keystore.p12
+#    key-store-type: "PKCS12"
+#    key-store-password: qwer1234
 
 app:
   domain:
