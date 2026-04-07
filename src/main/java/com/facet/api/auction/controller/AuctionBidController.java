@@ -42,11 +42,11 @@ public class AuctionBidController {
         messagingTemplate.convertAndSend("/topic/"+productIdx, message);
     }
 
-//    @PostMapping("/success")
-//    @Operation(summary = "낙찰 기능", description = "현재 사용자가 낙찰 받았을 경우 실행되는 기능 \n"
-//            +"--- \n" + "**※ 주의:** JWT 인증 쿠키가 반드시 포함되어야 합니다.")
-//    public ResponseEntity success(@RequestBody AucDto.BidReq dto, @AuthenticationPrincipal AuthUserDetails authUserDetails){
-//
-//        return ResponseEntity.ok(BaseResponse.success("낙찰되었습니다."));
-//    }
+    @PostMapping("/success")
+    @Operation(summary = "낙찰 기능", description = "현재 사용자가 낙찰 받았을 경우 실행되는 기능 \n"
+            +"--- \n" + "**※ 주의:** JWT 인증 쿠키가 반드시 포함되어야 합니다.")
+    public ResponseEntity success(@RequestBody AucDto.BidReq dto, @AuthenticationPrincipal AuthUserDetails authUserDetails){
+
+        return ResponseEntity.ok(BaseResponse.success("낙찰되었습니다."));
+    }
 }
