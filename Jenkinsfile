@@ -101,5 +101,21 @@ spec:
         }
       }
     }
+    stage('Service Traffic Shift') {
+      steps {
+        script {
+          // 이번에 배포된 색상 (홀수: blue, 짝수: green)
+          def buildNum = env.BUILD_ID.toInteger()
+          def targetColor = (buildNum % 2 == 0) ? "green" : "blue"
+
+          echo "서비스 트래픽을 ${targetColor}로 전환합니다."
+
+          // kubectl patch 명령으로 서비스의 Selector를 동적으로 변경
+          sh """
+            kubectl patch svc backend-service -p '{"spec":{"selector":{"version":"${targetColor}"}}}'
+          """
+        }
+      }
+    }
   }
 }
