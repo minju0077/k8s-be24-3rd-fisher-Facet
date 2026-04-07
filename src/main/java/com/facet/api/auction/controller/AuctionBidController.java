@@ -42,7 +42,7 @@ public class AuctionBidController {
         messagingTemplate.convertAndSend("/topic/"+productIdx, message);
     }
 
-    @PostMapping("/success")
+    @PostMapping("/bid/success")
     @Operation(summary = "낙찰 기능", description = "현재 사용자가 낙찰 받았을 경우 실행되는 기능 \n"
             +"--- \n" + "**※ 주의:** JWT 인증 쿠키가 반드시 포함되어야 합니다.")
     public ResponseEntity success(@AuthenticationPrincipal AuthUserDetails authUserDetails){
