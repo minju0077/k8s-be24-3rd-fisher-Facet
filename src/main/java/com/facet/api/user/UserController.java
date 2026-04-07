@@ -58,7 +58,7 @@ public class UserController {
                     .build();
 
             return ResponseEntity.ok()
-                    .header("Set-Cookie", "ATOKEN=" + jwt + "; Path=/")
+                    .header("Set-Cookie", "ATOKEN=" + jwt + "; Path=/ HttpOnly; Secure; SameSite=None")
                     .body(rseult);
         }
 
